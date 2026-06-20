@@ -29,3 +29,25 @@
 - Stop instance - aws ec2 stop-instances --instance-ids (your instance id)
 - Start instance - aws ec2 start-instances --instance-ids (your instance id)
 - Terminate instance - aws ec2 terminate-instances --instance-ids (your instance id)
+
+## Cross-Region Troubleshooting (Day 2)
+- Check current CLI default region - aws configure get region
+- Set CLI default region - aws configure set region (region name)
+- List key pairs in a specific region - aws ec2 describe-key-pairs --region (region name)
+- List all instances with name, ID, state, IP, key - aws ec2 describe-instances --region (region name) --query 'Reservations[].Instances[].{Name:Tags[?Key==`Name`]|[0].Value,InstanceId:InstanceId,State:State.Name,PublicIP:PublicIpAddress,KeyName:KeyName}' --output table
+- Search entire filesystem for a file by name - find / -iname "*filename*" 2>/dev/null
+- Check a key pair's fingerprint on AWS - aws ec2 describe-key-pairs --key-names (key name) --region (region name)
+- Check a local .pem file's fingerprint - openssl pkey -in (keyfile.pem) -pubout -outform DER 2>/dev/null | openssl md5 -c
+
+## Starting a Stopped Instance
+- Start a stopped instance - aws ec2 start-instances --region (region name) --instance-ids (instance id)
+- Get the new public IP after starting - aws ec2 describe-instances --region (region name) --instance-ids (instance id) --query 'Reservations[].Instances[].PublicIpAddress' --output text
+
+## Elastic IP (Static Public IP)
+- Allocate a new Elastic IP - aws ec2 allocate-address --region (region name) --domain vpc
+- Attach Elastic IP to an instance - aws ec2 associate-address --region (region name) --instance-id (instance id) --allocation-id (allocation id)
+- Release an Elastic IP (stop being billed for it) - aws ec2 release-address --region (region name) --allocation-id (allocation id)
+
+## File Permissions Fix (Windows-mounted drives in WSL)
+- Copy a file from Windows drive into Linux home directory - cp "/mnt/c/path/to/file.pem" ~/newname.pem
+- Fix private key permissions (only works properly inside Linux home, not /mnt/c) - chmod 400 ~/newname.pem
