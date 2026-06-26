@@ -51,3 +51,25 @@
 ## File Permissions Fix (Windows-mounted drives in WSL)
 - Copy a file from Windows drive into Linux home directory - cp "/mnt/c/path/to/file.pem" ~/newname.pem
 - Fix private key permissions (only works properly inside Linux home, not /mnt/c) - chmod 400 ~/newname.pem
+
+## Linux File Permissions (chmod & chown)
+- Create a file with content - echo "your text" > filename.txt
+- View file permissions - ls -la
+- Change file permissions (numeric) - chmod (number) filename
+- Give owner full access only - chmod 700 filename
+- Give owner read/write only - chmod 600 filename
+- Give owner read only - chmod 400 filename
+- Change file ownership - sudo chown user:group filename
+- Change ownership recursively - sudo chown -R user:group /path/to/folder
+
+## User Management
+- Create a new user - sudo adduser username
+- Switch to another user - su - username
+- Exit back to previous user - exit
+- Check current user's groups - groups
+- View all users on system - cat /etc/passwd | grep -v nologin | grep -v false
+- View sudoers file - sudo cat /etc/sudoers
+
+## Security Logs
+- View all auth logs - sudo cat /var/log/auth.log
+- Filter auth logs by username - sudo cat /var/log/auth.log | grep username
