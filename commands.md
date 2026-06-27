@@ -73,3 +73,21 @@
 ## Security Logs
 - View all auth logs - sudo cat /var/log/auth.log
 - Filter auth logs by username - sudo cat /var/log/auth.log | grep username
+
+## Symbolic Notation (chmod)
+- Add permission - chmod WHO+PERMISSION filename (e.g. chmod g+r file.txt)
+- Remove permission - chmod WHO-PERMISSION filename (e.g. chmod g-r file.txt)
+- Set exact permission - chmod WHO=PERMISSION filename (e.g. chmod g=rx file.txt)
+- Multiple changes at once - chmod u=rwx,g=r,o=r filename
+- Give everyone execute - chmod a+x filename
+
+## WHO reference
+- u = user (owner)
+- g = group
+- o = others
+- a = all (user + group + others)
+
+## WHAT reference
+- + = add permission
+- - = remove permission
+- = = set exactly this permission
