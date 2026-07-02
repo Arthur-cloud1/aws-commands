@@ -91,3 +91,47 @@
 - + = add permission
 - - = remove permission
 - = = set exactly this permission
+
+
+## Shell Scripting & Cron Jobs
+
+### Directory & File Setup
+- Create directory - `sudo mkdir -p /var/www/arthurapp`
+- Navigate into directory - `cd /var/www/`
+- Create script file - `nano server-report.sh`
+- View script contents - `cat server-report.sh`
+- Make script executable - `chmod +x server-report.sh`
+- Run script manually - `./server-report.sh`
+- Delete a file - `rm -rf filename`
+- View directory with permissions - `ls -la`
+
+### Timezone Configuration
+- Check current timezone - `timedatectl`
+- Set timezone to Lagos - `sudo timedatectl set-timezone Africa/Lagos`
+
+### Cron Management
+- Open and edit crontab - `crontab -e`
+- List all scheduled jobs - `crontab -l`
+- Delete all cron jobs - `crontab -r`
+- Open root crontab - `sudo crontab -e`
+
+### Cron Syntax
+```
+* * * * * /path/to/script.sh >> /path/to/output.txt 2>&1
+│ │ │ │ │
+│ │ │ │ └── Day of week (0=Sunday ... 6=Saturday)
+│ │ │ └──── Month (1-12)
+│ │ └────── Day of month (1-31)
+│ └──────── Hour (0-23)
+└────────── Minute (0-59)
+```
+
+### Cron Examples
+- Every minute - `* * * * *`
+- Every day at 10am - `0 10 * * *`
+- Monday & Friday at 10am - `0 10 * * 1,5`
+- Every 5 minutes - `*/5 * * * *`
+
+### Monitoring & Logs
+- Check cron logs - `grep CRON /var/log/syslog | tail -10`
+- Watch output file live - `tail -f /var/www/server-report.txt`
