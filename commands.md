@@ -135,3 +135,43 @@
 ### Monitoring & Logs
 - Check cron logs - `grep CRON /var/log/syslog | tail -10`
 - Watch output file live - `tail -f /var/www/server-report.txt`
+
+
+## Docker
+
+### Concepts
+- Docker = a tool that packages your app and everything it needs into a container
+- Container = a lightweight isolated environment that runs your app
+- Image = the blueprint/snapshot used to create a container
+- Dockerfile = a recipe that tells Docker how to build your image
+
+### Dockerfile Structure
+```dockerfile
+FROM node:18          # Start with an official Node.js 18 base image
+WORKDIR /app          # Set the working directory inside the container
+COPY . .              # Copy all files from current folder into the container
+RUN npm install       # Install app dependencies inside the container
+EXPOSE 3000           # Tell Docker this container will use port 3000
+CMD ["node", "app.js"] # Command to run when the container starts
+```
+
+### Essential Docker Commands
+- Build an image from Dockerfile - `docker build -t image-name .`
+- Run a container - `docker run -d -p 3000:3000 --name container-name image-name`
+- See running containers - `docker ps`
+- See all containers including stopped - `docker ps -a`
+- Stop a container - `docker stop container-name`
+- Start a stopped container - `docker start container-name`
+- Remove a container - `docker rm container-name`
+- See all images - `docker images`
+- Remove an image - `docker rmi image-name`
+- View container logs - `docker logs container-name`
+
+### Port Mapping Explained
+- `-p 3000:3000` means: port 3000 on EC2 → port 3000 inside container
+- First number = outside (EC2), Second number = inside (container)
+
+### docker run flags explained
+- `-d` = detached mode, runs container in background so terminal stays free
+- `-p` = port mapping
+- `--name` = give the container a custom name
