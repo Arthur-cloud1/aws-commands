@@ -182,3 +182,111 @@ So `-p 80:3000` means: visitors hit port 80 on your EC2, Docker forwards that tr
 | Isolated environment | No | Yes | Yes |
 | Portable | No | Yes | Yes |
 | Best for | Scheduled tasks | Running apps consistently | Serverless functions |
+
+
+
+
+
+# Docker Compose — Reference Guide
+
+## What Problem Does Docker Compose Solve?
+
+A real application has multiple parts:
+- A Node.js app
+- A database (PostgreSQL)
+- A cache (Redis)
+
+Without Compose you'd manually start each container one by one with separate docker run commands.
+With Compose you define everything in one file and start it all with one command.
+
+---
+
+## The docker-compose.yml File
+
+This is the file Docker Compose reads. It defines all your services (containers).
+
+### Example — Node.js App + PostgreSQL Database
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8080:3000"
+    container_name: arthurapp-container
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: arthurapp-db
+    environment:
+      POSTGRES_USER: arthur
+      POSTGRES_PASSWORD: arthur123
+      POSTGRES_DB: arthurdb
+    ports:
+      - "5432:5432"
+```
+
+### Line by Line Explanation
+
+**app service:**
+- `build: .` — build the image from the Dockerfile in the current directory
+- `ports: "8080:3000"` — map port 8080 on EC2 to port 3000 inside the container
+- `container_name` — give the container a name
+- `depends_on: - db` — do not start the app until the db container is running first
+
+**db service:**
+- `image: postgres:15` — pull the official PostgreSQL 15 image from Docker Hub (no Dockerfile needed)
+- `container_name` — give the database container a name
+- `environment` — environment variables PostgreSQL needs to set itself up:
+  - POSTGRES_USER = database username
+  - POSTGRES_PASSWORD = database password
+  - POSTGRES_DB = name of the database to create
+- `ports: "5432:5432"` — PostgreSQL default port, map EC2 port 5432 to container port 5432
+
+---
+
+## Key Concepts
+
+### depends_on
+Tells Compose the startup order. If app depends_on db, the database starts first.
+In plain English: "Do not start this service unless the condition is met."
+
+### services
+Each service = one container. You can have as many services as your app needs.
+
+### build vs image
+- `build: .` — build a custom image from your Dockerfile
+- `image: postgres:15` — pull an existing image from Docker Hub directly
+
+### networks
+Docker Compose automatically creates a private network for all your services.
+This means your app container and db container can talk to each other by service name.
+Example: your app can connect to the database using hostname `db` instead of an IP address.
+
+---
+
+## Common Issues
+
+### Port already in use
+If you get "address already in use" error:
+- Something else is already running on that port
+- On EC2, system PostgreSQL runs on port 5432 by default
+- Fix: `sudo systemctl stop postgresql` then run docker compose up again
+
+### Service name vs container name
+- Docker Compose commands use SERVICE NAME (e.g. `app`, `db`)
+- Regular Docker commands use CONTAINER NAME (e.g. `arthurapp-container`)
+- Wrong: `docker compose logs arthurapp-container`
+- Correct: `docker compose logs app`
+
+---
+
+## Docker Compose vs Regular Docker vs Kubernetes
+
+| | Regular Docker | Docker Compose | Kubernetes |
+|---|---|---|---|
+| Manages | One container at a time | Multiple containers on one server | Multiple containers across many servers |
+| Command | docker run | docker compose up | kubectl apply |
+| Best for | Simple single container | Multi-container apps on one server | Large scale production |

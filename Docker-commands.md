@@ -42,3 +42,43 @@
 - Remove all stopped containers - `docker container prune`
 - Remove all unused images - `docker image prune`
 - Remove everything unused - `docker system prune`
+
+
+
+
+
+
+
+
+
+# Docker Compose Commands Reference
+
+## What is Docker Compose?
+Docker Compose is a tool that lets you manage multiple containers with a single command.
+Instead of running docker run for each container separately, you define all your services
+in one docker-compose.yml file and start everything at once.
+
+## Core Commands
+
+- Start all services in background - `docker compose up -d`
+- Stop and remove all containers and networks - `docker compose down`
+- See running compose services - `docker compose ps`
+- See all compose services including stopped - `docker compose ps -a`
+- View logs from all services - `docker compose logs`
+- Watch logs live - `docker compose logs -f`
+- View logs from a specific service - `docker compose logs service-name`
+- Go inside a running service container - `docker compose exec service-name bash`
+- Restart all services - `docker compose restart`
+- Pull latest images - `docker compose pull`
+- Build or rebuild images - `docker compose build`
+
+## Important Notes
+- Use SERVICE NAME not container name for compose commands
+- Example: `docker compose logs app` not `docker compose logs arthurapp-container`
+- `docker compose up -d` automatically: builds image, creates network, starts containers in correct order
+- `docker compose down` removes containers and networks but NOT images or volumes
+
+## docker compose up vs docker compose down
+- `up -d` = start everything (build image + create network + start containers)
+- `down` = stop and remove everything compose created (containers + network)
+- Images and your code files are never deleted by these commands
